@@ -16,6 +16,7 @@ import {
     Users,
     BookOpen,
 } from "lucide-react";
+import { useAuth } from "@/providers/AuthProvider";
 
 type HeroBannerProps = {
     className?: string;
@@ -24,6 +25,8 @@ type HeroBannerProps = {
 
 export default function HeroBanner({ className, onSearch }: HeroBannerProps) {
     const [q, setQ] = React.useState("");
+
+    const { user } = useAuth();
 
     function submit(e: React.FormEvent) {
         e.preventDefault();
@@ -84,10 +87,20 @@ export default function HeroBanner({ className, onSearch }: HeroBannerProps) {
                         </Button>
 
                         <Button asChild variant="outline" className="rounded-xl bg-background/50 backdrop-blur">
-                            <Link href="/register">
-                                Create account
-                                <BadgeCheck className="ml-2 h-4 w-4" />
-                            </Link>
+                            {
+                                !user ? (
+                                    <Link href="/register">
+                                        Create account
+                                        <BadgeCheck className="ml-2 h-4 w-4" />
+                                    </Link>
+                                )
+                                    : (
+                                        <Link href="/become-tutor">
+                                            Become a Tutor
+                                            <BadgeCheck className="ml-2 h-4 w-4" />
+                                        </Link>
+                                    )
+                            }
                         </Button>
                     </div>
 

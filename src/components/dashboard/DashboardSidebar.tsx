@@ -11,8 +11,10 @@ import {
     Settings,
     GraduationCap,
     CreditCard,
+    Home,
 } from "lucide-react";
 import ThemeToggle from "../shared/ThemeToggle";
+import { Button } from "../ui/button";
 
 const ICONS = {
     dashboard: LayoutDashboard,
@@ -28,12 +30,12 @@ export default function DashboardSidebar({ role }: { role: Role }) {
     const items = NAV_BY_ROLE[role];
 
     return (
-        <aside className="w-[260px] border-r bg-card">
+        <aside className="w-[260px] border-r bg-card relative">
             <div className="px-4 py-4 border-b relative">
                 <div className="text-sm font-semibold">SkillBridge</div>
                 <div className="text-xs text-muted-foreground capitalize">{role} panel</div>
                 <div className="absolute top-4 right-1">
-                    <ThemeToggle/>
+                    <ThemeToggle />
                 </div>
             </div>
 
@@ -60,6 +62,16 @@ export default function DashboardSidebar({ role }: { role: Role }) {
                     );
                 })}
             </nav>
+            <div className="absolute bottom-6 right-1/4">
+                <Link href={"/"}>
+                    <Button variant={'outline'} className="w-full">
+                        <div className="flex items-center gap-2">
+                            <Home className="w-4 h-4" />
+                            Back to home
+                        </div>
+                    </Button>
+                </Link>
+            </div>
         </aside>
     );
 }
