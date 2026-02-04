@@ -41,6 +41,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "@/components/ui/use-toast";
 import { useAuth } from "@/providers/AuthProvider";
+import ThemeToggle from "./ThemeToggle";
 
 /** Adjust roles to match your backend */
 export type AppRole = "student" | "tutor" | "admin";
@@ -59,37 +60,6 @@ function initials(name?: string) {
     return parts.map((p) => p[0]?.toUpperCase()).join("") || "SB";
 }
 
-/**
- * Minimal theme toggle using `.dark` class on <html>.
- * Works with your globals.css `.dark { ... }` vars.
- */
-function useThemeClass() {
-    const [mounted, setMounted] = React.useState(false);
-    const [isDark, setIsDark] = React.useState(false);
-
-    React.useEffect(() => {
-        setMounted(true);
-
-        const stored = typeof window !== "undefined" ? localStorage.getItem("theme") : null;
-        const prefersDark =
-            typeof window !== "undefined" &&
-            window.matchMedia &&
-            window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-        const shouldUseDark = stored ? stored === "dark" : prefersDark;
-        document.documentElement.classList.toggle("dark", shouldUseDark);
-        setIsDark(shouldUseDark);
-    }, []);
-
-    function toggle() {
-        const next = !document.documentElement.classList.contains("dark");
-        document.documentElement.classList.toggle("dark", next);
-        localStorage.setItem("theme", next ? "dark" : "light");
-        setIsDark(next);
-    }
-
-    return { mounted, isDark, toggle };
-}
 
 function isActivePath(pathname: string, href: string) {
     if (href === "/") return pathname === "/";
@@ -153,9 +123,8 @@ export default function Navbar({
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
-    const {user,signOut}=useAuth()
+    const { user, signOut } = useAuth()
 
-    const { mounted, isDark, toggle } = useThemeClass();
 
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [q, setQ] = React.useState(() => searchParams.get("q") || "");
@@ -279,20 +248,7 @@ export default function Navbar({
                 {/* Right: Actions */}
                 <div className="flex items-center gap-2">
                     {/* Theme toggle */}
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={toggle}
-                        aria-label="Toggle theme"
-                        className="rounded-xl"
-                    >
-                        {/* avoid hydration mismatch icon swap */}
-                        {mounted ? (
-                            isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />
-                        ) : (
-                            <span className="h-4 w-4" />
-                        )}
-                    </Button>
+                    <ThemeToggle />
 
                     {/* Auth buttons / user menu (desktop) */}
                     <div className="hidden md:flex items-center gap-2">

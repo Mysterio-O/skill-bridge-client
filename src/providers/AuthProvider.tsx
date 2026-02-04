@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/auth-client";
 
-type Session = Awaited<ReturnType<typeof authClient.getSession>>["data"];
+export type Session = Awaited<ReturnType<typeof authClient.getSession>>["data"];
 
 type AuthEvent = "SIGNED_IN" | "SIGNED_OUT" | "SESSION_UPDATED";
 
@@ -47,7 +47,7 @@ const AuthContext = React.createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { data: session, isPending, error, refetch } = authClient.useSession();
 
-  console.log(session)
+  // console.log(session)
 
   const listenersRef = React.useRef(new Set<AuthListener>());
   const prevRef = React.useRef<Session>(null);
