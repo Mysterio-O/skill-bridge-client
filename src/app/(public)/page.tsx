@@ -1,71 +1,71 @@
-"use client"
+import React from "react";
+import HomeClient from "@/components/marketing/HomeClient";
+import type { Tutor } from "@/components/marketing/TutorsSection";
+import type { Review } from "@/components/marketing/ReviewsSection";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+export default function HomePage() {
+  const tutors: Tutor[] = [
+    {
+      id: 1,
+      name: "Ayesha Rahman",
+      title: "Full-Stack Engineer",
+      subjects: ["Next.js", "React", "Node.js", "System Design"],
+      rating: 4.9,
+      reviewsCount: 128,
+      hourlyRate: 18,
+      location: "Remote",
+      verified: true,
+    },
+    {
+      id: 2,
+      name: "Tanvir Hasan",
+      title: "Math & Physics Tutor",
+      subjects: ["Algebra", "Calculus", "Physics", "Exam prep"],
+      rating: 4.8,
+      reviewsCount: 96,
+      hourlyRate: 12,
+      location: "Remote",
+      verified: true,
+    },
+    {
+      id: 3,
+      name: "Nusrat Jahan",
+      title: "English & IELTS Coach",
+      subjects: ["IELTS", "Speaking", "Writing", "Grammar"],
+      rating: 4.9,
+      reviewsCount: 141,
+      hourlyRate: 15,
+      location: "Remote",
+      verified: true,
+    },
+  ];
 
-export default function Home() {
-  return (
-    <div className="min-h-screen bg-background text-foreground">
-     
+  const reviews: Review[] = [
+    {
+      id: 1,
+      name: "Samiul",
+      title: "Student",
+      rating: 5,
+      text:
+        "The sessions were structured and practical. I improved fast and finally felt confident building projects end to end.",
+    },
+    {
+      id: 2,
+      name: "Nabila",
+      title: "Parent",
+      rating: 4.8,
+      text:
+        "Great communication and clear progress tracking. My child improved consistency and performance within a few weeks.",
+    },
+    {
+      id: 3,
+      name: "Rifat",
+      title: "Student",
+      rating: 4.9,
+      text:
+        "Excellent feedback on mistakes and a clear learning path. Booking and follow-ups were smooth and professional.",
+    },
+  ];
 
-      {/* Main content */}
-      <main className="container mx-auto px-4 py-12">
-        <div className="space-y-8">
-          <div className="text-center">
-            <h2 className="text-4xl font-bold tracking-tight mb-4">
-              Welcome to SkillBridge
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              A modern skill-sharing platform built with Next.js, TypeScript, Tailwind CSS, and shadcn/ui.
-            </p>
-          </div>
-
-          {/* Feature cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-            <Card>
-              <CardHeader>
-                <CardTitle>TypeScript</CardTitle>
-                <CardDescription>Type-safe development</CardDescription>
-              </CardHeader>
-              <CardContent>
-                Full TypeScript support for better DX and code quality.
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Dark Mode</CardTitle>
-                <CardDescription>Theme switching enabled</CardDescription>
-              </CardHeader>
-              <CardContent>
-                next-themes integration with class-based dark mode support.
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>shadcn/ui</CardTitle>
-                <CardDescription>Beautiful components</CardDescription>
-              </CardHeader>
-              <CardContent>
-                Pre-built, accessible UI components ready to use.
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Status info */}
-          <div className="mt-12 p-6 bg-muted rounded-lg text-center">
-            <h3 className="text-xl font-semibold mb-2">Setup Complete!</h3>
-            <p className="text-muted-foreground mb-4">
-              Your SkillBridge project is ready for development.
-            </p>
-            <div className="flex gap-4 justify-center">
-              <Button>Get Started</Button>
-              <Button variant="outline">Learn More</Button>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
-  )
+  return <HomeClient tutors={tutors} reviews={reviews} />;
 }

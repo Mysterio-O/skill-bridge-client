@@ -47,6 +47,8 @@ const AuthContext = React.createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { data: session, isPending, error, refetch } = authClient.useSession();
 
+  console.log(session)
+
   const listenersRef = React.useRef(new Set<AuthListener>());
   const prevRef = React.useRef<Session>(null);
 
@@ -71,8 +73,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signInWithEmail: AuthContextValue["signInWithEmail"] = async (payload) => {
-    const { error } = await authClient.signIn.email(payload);
+    const { data,error } = await authClient.signIn.email(payload);
     if (error) return { ok: false, message: error.message || "Login failed." };
+    console.log(data);
+    await refetch();
     return { ok: true };
   };
 
@@ -92,11 +96,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut: AuthContextValue["signOut"] = async () => {
     await authClient.signOut();
+    await refetch();
   };
 
   const value: AuthContextValue = {
     session: session ?? null,
-    user: (session as any)?.user ?? null,
+    user: (session)?.user ?? null,
     isPending,
     error,
     refetch: async () => {

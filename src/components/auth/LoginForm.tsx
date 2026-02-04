@@ -50,7 +50,7 @@ export default function LoginForm() {
         }
 
         toast({ title: "Welcome back!", description: "You are signed in." });
-        router.push("/dashboard");
+        // router.push("/dashboard");
     }
 
     async function handleGoogle() {
