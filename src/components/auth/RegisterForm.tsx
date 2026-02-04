@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/providers/AuthProvider";
 
 const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
@@ -41,6 +42,9 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 export default function RegisterForm() {
+
+    const { signUpWithEmail } = useAuth()
+
     const router = useRouter();
     const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
@@ -80,28 +84,52 @@ export default function RegisterForm() {
         setValue("image", undefined, { shouldValidate: true, shouldDirty: true });
         if (fileInputRef.current) fileInputRef.current.value = "";
         toast({ title: "Image removed" });
+    };
+
+    async function uploadToImgbb(file: File) {
+        const fd = new FormData();
+        fd.append("file", file);
+
+        const res = await fetch("/api/upload/imgbb", {
+            method: "POST",
+            body: fd,
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+            throw new Error(data?.message || "Image upload failed");
+        }
+
+        // prefer `url` (direct). fallback to displayUrl.
+        return (data.url || data.displayUrl) as string;
     }
+
 
     async function onSubmit(values: FormValues) {
         try {
-            const fd = new FormData();
-            fd.append("name", values.name);
-            fd.append("email", values.email);
-            fd.append("password", values.password);
-            if (values.image instanceof File) fd.append("image", values.image);
+            const callbackURL = new URL("/redirect", window.location.origin).toString();
 
-            const res = await fetch("/api/auth/register", {
-                method: "POST",
-                body: fd,
+            let imageUrl: string | undefined = undefined;
+
+            // 1) Upload to ImgBB (if image picked)
+            if (values.image instanceof File) {
+                imageUrl = await uploadToImgbb(values.image);
+            }
+
+            // 2) Signup with Better Auth using image URL (string)
+            const res = await signUpWithEmail({
+                name: values.name,
+                email: values.email,
+                password: values.password,
+                image: imageUrl,
+                callbackURL,
             });
-
-            const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
                 toast({
                     variant: "destructive",
                     title: "Registration failed",
-                    description: data?.message || "Please check your details and try again.",
+                    description: res?.message || "Please check your details and try again.",
                 });
                 return;
             }
@@ -111,15 +139,17 @@ export default function RegisterForm() {
                 description: "Now sign in to continue.",
             });
 
-            router.push("/login");
+            // optional:
+            router.replace("/login");
         } catch (e) {
             toast({
                 variant: "destructive",
                 title: "Something went wrong",
-                description: "Please try again.",
+                description: (e instanceof Error) ? e?.message : "Please try again.",
             });
         }
     }
+
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
