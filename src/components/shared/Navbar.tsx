@@ -40,6 +40,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "@/components/ui/use-toast";
+import { useAuth } from "@/providers/AuthProvider";
 
 /** Adjust roles to match your backend */
 export type AppRole = "student" | "tutor" | "admin";
@@ -144,15 +145,15 @@ function bookingsHref(role: AppRole) {
 }
 
 export default function Navbar({
-    user,
     className,
 }: {
-    user?: NavbarUser | null;
     className?: string;
 }) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
+
+    const {user,signOut}=useAuth()
 
     const { mounted, isDark, toggle } = useThemeClass();
 
@@ -194,17 +195,7 @@ export default function Navbar({
     async function handleLogout() {
         try {
             // implement this route in your backend later
-            const res = await fetch("/api/auth/logout", { method: "POST" }).catch(() => null);
-
-            if (res && !res.ok) {
-                const data = await res.json().catch(() => ({}));
-                toast({
-                    variant: "destructive",
-                    title: "Logout failed",
-                    description: data?.message || "Please try again.",
-                });
-                return;
-            }
+            await signOut()
 
             toast({ title: "Signed out", description: "See you again soon." });
             router.push("/login");
@@ -228,7 +219,7 @@ export default function Navbar({
                 className
             )}
         >
-            <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4">
+            <div className="mx-auto flex h-18 max-w-6xl items-center justify-between gap-3 px-4">
                 {/* Left: Brand */}
                 <div className="flex items-center gap-3">
                     <Link href="/" className="group flex items-center gap-2">
@@ -332,14 +323,14 @@ export default function Navbar({
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="ghost" className="rounded-xl px-2">
                                             <div className="flex items-center gap-2">
-                                                <Avatar className="h-8 w-8">
+                                                <Avatar className="h-7 w-7">
                                                     <AvatarImage src={user.imageUrl ?? undefined} alt={user.name} />
                                                     <AvatarFallback>{initials(user.name)}</AvatarFallback>
                                                 </Avatar>
-                                                <div className="hidden lg:block text-left">
+                                                {/* <div className="hidden lg:block text-left">
                                                     <p className="text-sm font-medium leading-tight">{user.name}</p>
                                                     <p className="text-xs text-muted-foreground leading-tight">{user.email}</p>
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </Button>
                                     </DropdownMenuTrigger>

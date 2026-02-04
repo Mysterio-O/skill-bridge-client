@@ -34,11 +34,11 @@ export default function HeroBanner({ className, onSearch }: HeroBannerProps) {
         <section className={cn("relative overflow-hidden", className)}>
             <BackgroundGlow className="opacity-60 dark:opacity-80" />
 
-            <div className="relative mx-auto max-w-6xl px-4 pt-14 pb-10 md:pt-20 md:pb-14">
+            <div className="relative mx-auto max-w-6xl px-4 pt-14 pb-10 md:pt-10 md:pb-14">
                 <div className="mx-auto max-w-3xl text-center">
                     <Badge
                         variant="secondary"
-                        className="mb-4 inline-flex items-center gap-2 border border-border/60 bg-background/60 backdrop-blur"
+                        className="mb-4 inline-flex items-center gap-2 border border-border/60 bg-background/60 backdrop-blur secondary-font"
                     >
                         <ShieldCheck className="h-4 w-4" />
                         Trusted learning platform

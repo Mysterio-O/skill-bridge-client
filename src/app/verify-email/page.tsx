@@ -13,7 +13,7 @@ export default function VerifyEmailPage() {
     const token = params.get("token");
     const [loading, setLoading] = React.useState(true);
     const [status, setStatus] = React.useState<"idle" | "success" | "error">("idle");
-    const [message, setMessage] = React.useState<string>("");
+    const [message, setMessage] = React.useState<string | undefined>("");
 
     React.useEffect(() => {
         let cancelled = false;
@@ -29,13 +29,17 @@ export default function VerifyEmailPage() {
             try {
                 setLoading(true);
 
-                // ✅ Call your backend verify endpoint (Better Auth)
-                // Most Better Auth setups expose: POST /api/auth/verify-email
                 const res = await authClient.verifyEmail({
                     query: {
                         token
                     }
-                })
+                });
+
+                if (res.error) {
+                    setStatus('error');
+                    setMessage(res.error.message);
+                    return
+                }
 
                 if (cancelled) return;
 
