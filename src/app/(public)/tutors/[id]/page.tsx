@@ -4,6 +4,8 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import CTAButtons from "./components/CTAButtons";
+import TutorReviewsSwiper from "./components/TutorReviewsSwiper";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +23,44 @@ type TutorSubject = {
     categoryId: string;
     category?: TutorCategory;
 };
+
+type Student = {
+    id: string;
+    name: string;
+    email: string;
+    image: string | null;
+}
+
+export type Review = {
+    id: string;
+    bookingId: string;
+    studentId: string;
+    rating: number;
+    comment: string;
+    isHidden: boolean;
+    hiddenReason: string | null;
+    createdAt: string;
+    updatedAt: string;
+    student: Student;
+}
+
+type User = {
+    id: string;
+    name: string;
+    email: string;
+    emailVerified: boolean;
+    image: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+    role: "student" | 'tutor' | 'admin';
+    phone: string | number;
+    status: string;
+    bio: string;
+    lastLoginAt: string;
+    bannedAt: string | null;
+    banReason: string | null;
+    tutorReviews: Review[];
+}
 
 type Tutor = {
     id: string;
@@ -54,7 +94,7 @@ type Tutor = {
     subjects?: TutorSubject[];
 
     // If your API includes user data:
-    user?: { name?: string | null; email?: string | null; image?: string | null } | null;
+    user: User
 };
 
 async function getTutorById(id: string) {
@@ -117,7 +157,7 @@ export default async function TutorProfilePage({
         return (
             <div className="relative min-h-[calc(100vh-64px)] bg-background">
                 <BackgroundGlow />
-                <div className="relative mx-auto max-w-3xl px-4 py-10">
+                <div className="relative mx-auto max-w-5xl px-4 py-10">
                     <Card className="rounded-3xl border bg-card/55 backdrop-blur p-6">
                         <h1 className="text-lg font-semibold text-foreground">Tutor not found</h1>
                         <p className="mt-2 text-sm text-muted-foreground">
@@ -161,11 +201,16 @@ export default async function TutorProfilePage({
     const mode = prettyMode(tutor.sessionMode);
     const platform = prettyPlatform(tutor.meetingPlatform);
 
+
+    const reviews = tutor.user?.tutorReviews ?? [];
+    // console.log(reviews);
+    // console.log(tutor);
+
     return (
         <div className="relative min-h-[calc(100vh-64px)] bg-background">
             <BackgroundGlow />
 
-            <div className="relative mx-auto max-w-3xl px-4 py-10">
+            <div className="relative mx-auto max-w-6xl px-4 py-10">
                 <Card className="rounded-3xl border bg-card/55 backdrop-blur p-6">
                     {/* Top */}
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -228,17 +273,7 @@ export default async function TutorProfilePage({
                                 </span>
                             </div>
 
-                            <div className="mt-3 flex gap-2 sm:justify-end">
-                                <Button className="rounded-2xl" asChild>
-                                    <Link href={`/bookings/new?tutorId=${encodeURIComponent(tutor.id)}`}>
-                                        Schedule booking
-                                    </Link>
-                                </Button>
-
-                                <Button variant="outline" className="rounded-2xl" asChild>
-                                    <Link href="/tutors">Back</Link>
-                                </Button>
-                            </div>
+                            <CTAButtons id={tutor.id} />
                         </div>
                     </div>
 
@@ -320,6 +355,12 @@ export default async function TutorProfilePage({
                             {tutor.about ?? "No description provided yet."}
                         </p>
                     </div>
+
+                    <TutorReviewsSwiper
+                        reviews={reviews}
+                        title="Student Reviews"
+                        subtitle="Swipe-style running highlights (hover to pause)"
+                    />
 
                     {/* Footer note */}
                     <div className="mt-6 rounded-2xl border bg-background/40 p-4">

@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star, GraduationCap, BadgeCheck, Globe, Calendar } from "lucide-react";
 import type { TutorProfile, TutorSubject } from "@/app/actions/tutorActions/getTutors";
+import { useAuth } from "@/providers/AuthProvider";
 
 function initials(name?: string) {
   if (!name) return "T";
@@ -27,6 +28,9 @@ export default function TutorDetailsSheet({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
+
+  const { user } = useAuth();
+
   const name = tutor?.user?.name ?? "Tutor";
   const rating =
     tutor?.avgRating != null ? Number(tutor.avgRating).toFixed(1) : null;
@@ -147,11 +151,11 @@ export default function TutorDetailsSheet({
               </div>
 
               <div className="mt-5 flex flex-col gap-2">
-                <Button className="rounded-2xl" asChild>
+                {user && <Button className="rounded-2xl" asChild>
                   <Link href={`/bookings/new?tutorId=${encodeURIComponent(tutor.id)}`}>
                     Schedule booking
                   </Link>
-                </Button>
+                </Button>}
 
                 <Button variant="secondary" className="rounded-2xl" asChild>
                   <Link href={`/tutors/${encodeURIComponent(tutor.id)}`}>

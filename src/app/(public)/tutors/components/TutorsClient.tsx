@@ -57,7 +57,6 @@ export default function TutorsClient({
         const next = sp.get("search") ?? "";
         setInput(next);
         setSearch(next);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sp]);
 
     // debounce URL update from input

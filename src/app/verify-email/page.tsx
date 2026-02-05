@@ -68,26 +68,28 @@ export default function VerifyEmailPage() {
     }, [token, router]);
 
     return (
-        <div className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center gap-3 px-4 text-center">
-            {loading ? <Loader2 className="h-6 w-6 animate-spin" /> : null}
+        <React.Suspense fallback={''}>
+            <div className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center gap-3 px-4 text-center">
+                {loading ? <Loader2 className="h-6 w-6 animate-spin" /> : null}
 
-            <h1 className="text-xl font-semibold">Verify Email</h1>
+                <h1 className="text-xl font-semibold">Verify Email</h1>
 
-            {status === "success" ? (
-                <p className="text-sm text-muted-foreground">{message}</p>
-            ) : status === "error" ? (
-                <>
-                    <p className="text-sm text-destructive">{message}</p>
-                    <button
-                        className="text-sm text-primary underline"
-                        onClick={() => router.replace("/login")}
-                    >
-                        Go to login
-                    </button>
-                </>
-            ) : (
-                <p className="text-sm text-muted-foreground">Verifying your email...</p>
-            )}
-        </div>
+                {status === "success" ? (
+                    <p className="text-sm text-muted-foreground">{message}</p>
+                ) : status === "error" ? (
+                    <>
+                        <p className="text-sm text-destructive">{message}</p>
+                        <button
+                            className="text-sm text-primary underline"
+                            onClick={() => router.replace("/login")}
+                        >
+                            Go to login
+                        </button>
+                    </>
+                ) : (
+                    <p className="text-sm text-muted-foreground">Verifying your email...</p>
+                )}
+            </div>
+        </React.Suspense>
     );
 }

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star, Clock, MapPin } from "lucide-react";
 import type { TutorProfile, TutorSubject } from "@/app/actions/tutorActions/getTutors";
+import { useAuth } from "@/providers/AuthProvider";
 
 function initials(name?: string) {
     if (!name) return "T";
@@ -25,6 +26,9 @@ export default function TutorCard({
     tutor: TutorProfile;
     onOpen: () => void;
 }) {
+
+    const { user } = useAuth();
+
     const name = tutor.user?.name ?? "Tutor";
     const rating =
         tutor.avgRating != null ? Number(tutor.avgRating).toFixed(1) : null;
@@ -105,18 +109,27 @@ export default function TutorCard({
                         ))}
                     </div>
 
-                    <div className="mt-4 flex items-center gap-2">
-                        <Button variant="secondary" className="rounded-2xl" onClick={onOpen}>
-                            View details
-                        </Button>
 
-                        <Button className="rounded-2xl" asChild>
-                            <Link href={`/bookings/new?tutorId=${encodeURIComponent(tutor.id)}`}>
-                                Schedule booking
-                            </Link>
-                        </Button>
-                    </div>
                 </div>
+            </div>
+
+            <div className="mt-4 flex items-center justify-evenly gap-2">
+                <Button variant="secondary" className="rounded-2xl cursor-pointer" onClick={onOpen}>
+                    View details
+                </Button>
+
+                {
+                    user ? (<Button className="rounded-2xl" asChild>
+                        <Link href={`/bookings/new?tutorId=${encodeURIComponent(tutor.id)}`}>
+                            Schedule booking
+                        </Link>
+                    </Button>)
+                    :(<Button className="rounded-2xl" asChild>
+                        <Link href={`/login`}>
+                            Signin to schedule
+                        </Link>
+                    </Button>)
+                }
             </div>
         </Card>
     );
