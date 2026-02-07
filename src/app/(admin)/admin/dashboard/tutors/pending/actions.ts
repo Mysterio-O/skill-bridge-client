@@ -51,11 +51,11 @@ export async function adminUpdateTutorApplicationStatus(input: {
     const backend = process.env.NEXT_PUBLIC_BACKEND_URL;
     if (!backend) throw new Error("NEXT_PUBLIC_BACKEND_URL missing");
 
-    console.log(input.applicationId)
+    // console.log(input.applicationId)
 
     const url = new URL(`/api/tutor/${input.applicationId}/update`, backend);
 
-    console.log(url.toString());
+    // console.log(url.toString());
 
     const res = await fetch(url.toString(), {
         method: "PATCH",
@@ -74,17 +74,26 @@ export async function adminUpdateTutorApplicationStatus(input: {
 }
 
 export async function adminDeleteTutorApplication(input: { applicationId: string }) {
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/api/admin/tutor-applications/${input.applicationId}`,
-        {
-            method: "DELETE",
-            cache: "no-store",
+
+    const backend = process.env.NEXT_PUBLIC_BACKEND_URL;
+    if (!backend) throw new Error("NEXT_PUBLIC_BACKEND_URL missing");
+
+    const url = new URL(`/api/admin/users/tutor-applications/${input.applicationId}`, backend);
+
+    const res = await fetch(url.toString(), {
+        method: "DELETE",
+        headers: {
+            'Content-Type': "application/json",
+            Cookie: await getCookieHeader(),
         }
-    );
+    });
 
     const json = await res.json();
+
+    console.log(res,json)
+
     if (!res.ok || !json.success) throw new Error(json?.message || "Failed to delete application");
 
-    revalidatePath("/admin/dashboard/tutors/pending"); // adjust path
+    revalidatePath("/admin/dashboard/tutors/pending");
     return json;
 }

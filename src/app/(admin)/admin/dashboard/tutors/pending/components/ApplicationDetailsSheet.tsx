@@ -118,8 +118,9 @@ export default function ApplicationDetailsSheet({
                 return;
             }
 
-            const res = await adminDeleteTutorApplication({
+            const res = await adminUpdateTutorApplicationStatus({
                 applicationId: application.id,
+                status: "cancelled",
             });
 
             if (res?.success) {
