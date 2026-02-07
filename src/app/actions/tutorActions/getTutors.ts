@@ -1,13 +1,35 @@
+import { Review } from "@/app/(public)/tutors/[id]/page";
+
 export type TutorUser = {
   id: string;
   name: string;
   email: string;
+  emailVerified: boolean;
   image: string | null;
-  emailVerified?: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  role: "student" | 'tutor' | 'admin';
+  phone: string | number;
+  status: string;
+  bio: string;
+  lastLoginAt: string;
+  bannedAt: string | null;
+  banReason: string | null;
+  tutorReviews: Review[];
 };
 
 export type TutorSubject = {
-  id?: string;
+  id: string;
+  tutorId: string;
+  categoryId: string;
+  category: {
+    createdAt: string;
+    description: string;
+    icon: string;
+    isActive: boolean;
+    name: string;
+    updatedAt: string;
+  }
   name?: string;
   title?: string;
   slug?: string;
@@ -82,7 +104,7 @@ export async function getTutors(params: Params = {}): Promise<GetTutorsResponse>
 
   const url = params.origin
     ? new URL("/api/tutors", params.origin)
-    : new URL("http://localhost/api/tutors"); 
+    : new URL("http://localhost/api/tutors");
 
   if (!params.origin) {
     const qs = new URLSearchParams();

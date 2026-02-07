@@ -24,6 +24,7 @@ export type NavItem = {
 export const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     admin: [
         { title: "Dashboard", href: "/admin/dashboard", icon: "dashboard" },
+        { title: "Applications", href: "/admin/dashboard/tutors/pending", icon: "users" },
         { title: "Users", href: "/admin/users", icon: "users" },
         { title: "Bookings", href: "/admin/bookings", icon: "bookings" },
         { title: "Settings", href: "/admin/settings", icon: "settings" },
