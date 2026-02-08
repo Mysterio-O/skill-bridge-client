@@ -45,3 +45,40 @@ export async function POST(req: Request) {
         );
     }
 }
+
+
+export async function GET(req: Request) {
+    const backend = process.env.NEXT_PUBLIC_BACKEND_URL;
+    if (!backend) {
+        return NextResponse.json(
+            { success: false, message: "NEXT_PUBLIC_BACKEND_URL missing" },
+            { status: 500 }
+        );
+    }
+
+    const url = new URL(req.url);
+    const page = url.searchParams.get("page") ?? "1";
+    const page_size = url.searchParams.get("page_size") ?? "10";
+    const search = url.searchParams.get("search") ?? "";
+
+    const target = new URL("/api/bookings", backend);
+    target.searchParams.set("page", page);
+    target.searchParams.set("page_size", page_size);
+    if (search.trim().length > 0) target.searchParams.set("search", search.trim());
+
+    const cookie = req.headers.get("cookie") ?? "";
+
+    const res = await fetch(target.toString(), {
+        method: "GET",
+        cache: "no-store",
+        headers: {
+            Cookie: cookie,
+        },
+    });
+
+    const json = await res.json().catch(() => null);
+
+    return NextResponse.json(json ?? { success: false, message: "Invalid JSON" }, {
+        status: res.status,
+    });
+}
