@@ -33,7 +33,6 @@ export default function BookingDetailsSheet({
         try {
             await navigator.clipboard.writeText(text);
         } catch {
-            // ignore
         }
     }
 
