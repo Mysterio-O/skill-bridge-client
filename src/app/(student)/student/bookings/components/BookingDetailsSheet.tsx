@@ -10,6 +10,7 @@ import { ExternalLink, Copy, Check, Pencil, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { updateBookingStatus } from "../actions";
 import { toast } from "@/components/ui/use-toast";
+import ReviewModal from "./ReviewModal";
 
 function formatDT(dt: string | null | undefined) {
     if (!dt) return "-";
@@ -35,6 +36,9 @@ export default function BookingDetailsSheet({
     const open = !!booking;
 
     const router = useRouter();
+
+    const [reviewOpen, setReviewOpen] = React.useState(false);
+
 
     const [busy, setBusy] = React.useState<null | "complete" | "review">(null);
 
@@ -149,7 +153,7 @@ export default function BookingDetailsSheet({
                                 <Button
                                     variant="outline"
                                     className="gap-2 border-destructive"
-                                    onClick={() => runAction("review", booking.id)}
+                                    onClick={() => setReviewOpen(true)}
                                     disabled={!!busy}
                                 >
                                     {busy === "review" ? (
@@ -160,6 +164,7 @@ export default function BookingDetailsSheet({
                                     Submit a review
                                 </Button>
                             )}
+
 
 
                         </div>
@@ -290,6 +295,17 @@ export default function BookingDetailsSheet({
                                 </div>
                             )}
                         </Section>
+{/* {console.log(booking)} */}
+                        <ReviewModal
+                            open={reviewOpen}
+                            onOpenChange={setReviewOpen}
+                            booking={booking}
+                            onSubmitted={(patch) => {
+                                onBookingUpdated(patch); // updates list + sheet instantly
+                            }}
+                        />
+
+
                     </div>
                 </ScrollArea>
             </SheetContent>

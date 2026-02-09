@@ -49,13 +49,13 @@ export async function fetchBookings(params: {
 export async function updateBookingStatus(payload: {
     status: string;
     cancelReason?: string;
-    bookingId:string;
+    bookingId: string;
 }) {
     try {
         const backend = process.env.NEXT_PUBLIC_BACKEND_URL;
         if (!backend) throw new Error("NEXT_PUBLIC_BACKEND_URL missing");
 
-        if(!payload.bookingId) throw new Error("booking id missing")
+        if (!payload.bookingId) throw new Error("booking id missing")
 
         const url = new URL(`/api/bookings/${payload.bookingId}`, backend);
 
@@ -70,7 +70,7 @@ export async function updateBookingStatus(payload: {
 
         const json = await res.json();
 
-        console.log(res,'\n',json);
+        console.log(res, '\n', json);
 
         if (!res.ok || !json.success) {
             throw new Error(json?.message || 'Failed to update booking status');
@@ -82,4 +82,44 @@ export async function updateBookingStatus(payload: {
     catch (e) {
         console.error('error updating booking status', e);
     }
+}
+
+
+
+export async function postReview(payload: {
+    tutorId: string;
+    bookingId: string;
+    rating: number;
+    comment?: string;
+}) {
+    const backend = process.env.NEXT_PUBLIC_BACKEND_URL;
+    if (!backend) throw new Error("NEXT_PUBLIC_BACKEND_URL missing");
+
+    if (!payload.bookingId) throw new Error("bookingId missing");
+    if (typeof payload.rating !== "number") throw new Error("rating missing");
+
+    const url = new URL("/api/review", backend);
+
+    const res = await fetch(url.toString(), {
+        method: "POST",
+        cache: "no-store",
+        headers: {
+            Cookie: await getCookieHeader(),
+            "content-type": "application/json",
+        },
+        body: JSON.stringify({
+            tutorId: payload.tutorId,
+            bookingId: payload.bookingId,
+            rating: payload.rating,
+            comment: payload.comment?.trim() || undefined,
+        }),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok || !json?.success) {
+        throw new Error(json?.message || "Failed to submit review");
+    }
+
+    return json;
 }

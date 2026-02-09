@@ -24,6 +24,7 @@ export type BTutorProfile = {
     userId: string;
     yearsOfExperience: number;
     user: {
+        id:string;
         email: string;
         name: string;
         phone: string | number | null;
