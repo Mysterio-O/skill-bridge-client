@@ -111,7 +111,7 @@ function dashboardHref(role: AppRole) {
 function bookingsHref(role: AppRole) {
     if (role === "tutor") return "/tutor/dashboard/bookings"; // tutors see sessions inside tutor dashboard (adjust if you create /tutor/sessions)
     if (role === "admin") return "/admin/dashboard/bookings";
-    return "/student/dashboard/bookings";
+    return "/student/bookings";
 }
 
 export default function Navbar({

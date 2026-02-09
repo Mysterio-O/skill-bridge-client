@@ -1,3 +1,5 @@
+'use server'
+
 import { headers } from "next/headers";
 
 
@@ -41,4 +43,43 @@ export async function fetchBookings(params: {
 
     return json;
 
+};
+
+
+export async function updateBookingStatus(payload: {
+    status: string;
+    cancelReason?: string;
+    bookingId:string;
+}) {
+    try {
+        const backend = process.env.NEXT_PUBLIC_BACKEND_URL;
+        if (!backend) throw new Error("NEXT_PUBLIC_BACKEND_URL missing");
+
+        if(!payload.bookingId) throw new Error("booking id missing")
+
+        const url = new URL(`/api/bookings/${payload.bookingId}`, backend);
+
+        const res = await fetch(url.toString(), {
+            method: "PATCH",
+            headers: {
+                Cookie: await getCookieHeader(),
+                "content-type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const json = await res.json();
+
+        console.log(res,'\n',json);
+
+        if (!res.ok || !json.success) {
+            throw new Error(json?.message || 'Failed to update booking status');
+        }
+
+        return json;
+
+    }
+    catch (e) {
+        console.error('error updating booking status', e);
+    }
 }

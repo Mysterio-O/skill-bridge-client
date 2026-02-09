@@ -6,7 +6,10 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Copy } from "lucide-react";
+import { ExternalLink, Copy, Check, Pencil, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { updateBookingStatus } from "../actions";
+import { toast } from "@/components/ui/use-toast";
 
 function formatDT(dt: string | null | undefined) {
     if (!dt) return "-";
@@ -15,7 +18,7 @@ function formatDT(dt: string | null | undefined) {
     return d.toLocaleString();
 }
 
-function safe(v:unknown) {
+function safe(v: unknown) {
     if (v === null || v === undefined || v === "") return "-";
     return String(v);
 }
@@ -23,11 +26,17 @@ function safe(v:unknown) {
 export default function BookingDetailsSheet({
     booking,
     onClose,
+    onBookingUpdated,
 }: {
     booking: Booking | null;
     onClose: () => void;
+    onBookingUpdated: (patch: Partial<Booking> & { id: string }) => void;
 }) {
     const open = !!booking;
+
+    const router = useRouter();
+
+    const [busy, setBusy] = React.useState<null | "complete" | "review">(null);
 
     async function copy(text: string) {
         try {
@@ -41,10 +50,45 @@ export default function BookingDetailsSheet({
     const tutor = booking.tutorProfile?.user;
     const student = booking.student;
 
+    async function runAction(action: "complete" | "review", id: string) {
+        const t = toast({ title: "Please wait...", description: "Processing..." });
+
+        try {
+            setBusy(action);
+
+            if (action === "complete") {
+                const res = await updateBookingStatus({ status: "completed", bookingId: id });
+
+                // instant UI update (list + sheet)
+                onBookingUpdated({
+                    id,
+                    status: "completed",
+                    completedAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                });
+
+                t.update({ title: "Completed", description: "Booking marked as completed." });
+                return;
+            }
+
+            if (action === "review") {
+                t.update({ title: "Review", description: "Review flow coming next." });
+                return;
+            }
+        } catch (e) {
+            t.update({
+                title: "Action failed",
+                description: e instanceof Error ? e.message : "Something went wrong.",
+                variant: "destructive",
+            });
+        } finally {
+            setBusy(null);
+        }
+    }
+
     return (
         <Sheet open={open} onOpenChange={onClose}>
             <SheetContent
-                // responsive: full width on mobile, right panel on larger screens
                 side="right"
                 className="w-full sm:max-w-xl p-0"
             >
@@ -84,6 +128,40 @@ export default function BookingDetailsSheet({
                                 <Copy className="h-4 w-4" />
                                 Copy Booking ID
                             </Button>
+
+                            {booking.status === "confirmed" && (
+                                <Button
+                                    variant="outline"
+                                    className="gap-2 border-primary"
+                                    onClick={() => runAction("complete", booking.id)}
+                                    disabled={!!busy}
+                                >
+                                    {busy === "complete" ? (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <Check className="h-4 w-4" />
+                                    )}
+                                    Mark as completed
+                                </Button>
+                            )}
+
+                            {booking.status === "completed" && (
+                                <Button
+                                    variant="outline"
+                                    className="gap-2 border-destructive"
+                                    onClick={() => runAction("review", booking.id)}
+                                    disabled={!!busy}
+                                >
+                                    {busy === "review" ? (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <Pencil className="h-4 w-4" />
+                                    )}
+                                    Submit a review
+                                </Button>
+                            )}
+
+
                         </div>
 
                         {/* Booking Info */}
