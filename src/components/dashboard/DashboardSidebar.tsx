@@ -30,7 +30,7 @@ export default function DashboardSidebar({ role }: { role: Role }) {
     const items = NAV_BY_ROLE[role];
 
     return (
-        <aside className="w-[260px] border-r bg-card relative">
+        <aside className="w-[260px] h-[calc(100vh)] sticky top-0 border-r bg-card ">
             <div className="px-4 py-4 border-b relative">
                 <div className="text-sm font-semibold">SkillBridge</div>
                 <div className="text-xs text-muted-foreground capitalize">{role} panel</div>

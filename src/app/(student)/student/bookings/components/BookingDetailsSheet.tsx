@@ -133,7 +133,7 @@ export default function BookingDetailsSheet({
                                 Copy Booking ID
                             </Button>
 
-                            {booking.status === "confirmed" && (
+                            {/* {booking.status === "confirmed" && (
                                 <Button
                                     variant="outline"
                                     className="gap-2 border-primary"
@@ -147,7 +147,7 @@ export default function BookingDetailsSheet({
                                     )}
                                     Mark as completed
                                 </Button>
-                            )}
+                            )} */}
 
                             {booking.status === "completed" && (
                                 <Button
