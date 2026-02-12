@@ -1,0 +1,89 @@
+"use server";
+
+import { headers } from "next/headers";
+import { revalidatePath } from "next/cache";
+import type { TutorAvailability, TutorProfileDTO } from "./types";
+
+async function getCookieHeader() {
+    const h = await headers();
+    return h.get("cookie") ?? "";
+}
+
+function getBackendUrl() {
+    const backend = process.env.NEXT_PUBLIC_BACKEND_URL;
+    if (!backend) throw new Error("NEXT_PUBLIC_BACKEND_URL missing");
+    return backend;
+}
+
+
+export async function getTutorProfileAction(): Promise<TutorProfileDTO> {
+    const backend = getBackendUrl();
+
+    const url = new URL("/api/tutor/profile", backend);
+
+    const res = await fetch(url.toString(), {
+        method: "GET",
+        cache: "no-store",
+        headers: {
+            Cookie: await getCookieHeader(),
+        },
+    });
+
+    const json = await res.json();
+
+    if (!res.ok || !json?.success) {
+        throw new Error(json?.message || "Failed to fetch tutor profile");
+    }
+
+    return json.data as TutorProfileDTO;
+}
+
+
+export async function updateTutorProfileAction(payload: Partial<TutorProfileDTO>) {
+    const backend = getBackendUrl();
+
+    const url = new URL("/api/tutor/profile", backend);
+
+    const res = await fetch(url.toString(), {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Cookie: await getCookieHeader(),
+        },
+        body: JSON.stringify(payload),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok || !json?.success) {
+        throw new Error(json?.message || "Failed to update tutor profile");
+    }
+
+    revalidatePath("/tutor/settings");
+    return json.tutor as TutorProfileDTO;
+}
+
+
+export async function updateAvailabilityAction(status: TutorAvailability) {
+    const backend = getBackendUrl();
+
+    const url = new URL("/api/tutor/availability", backend);
+
+    const res = await fetch(url.toString(), {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Cookie: await getCookieHeader(),
+        },
+        body: JSON.stringify({ status }),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok || !json?.success) {
+        throw new Error(json?.message || "Failed to update availability");
+    }
+
+    revalidatePath("/tutor/settings");
+    return json.profile as { availability: TutorAvailability };
+}
