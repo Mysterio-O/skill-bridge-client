@@ -109,7 +109,7 @@ function dashboardHref(role: AppRole) {
 }
 
 function bookingsHref(role: AppRole) {
-    if (role === "tutor") return "/tutor/dashboard/bookings"; // tutors see sessions inside tutor dashboard (adjust if you create /tutor/sessions)
+    if (role === "tutor") return "/tutor/bookings"; // tutors see sessions inside tutor dashboard (adjust if you create /tutor/sessions)
     if (role === "admin") return "/admin/dashboard/bookings";
     return "/student/bookings";
 }

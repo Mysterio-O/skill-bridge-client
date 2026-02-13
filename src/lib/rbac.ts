@@ -13,7 +13,8 @@ export type NavIcon =
     | "bookings"
     | "settings"
     | "students"
-    | "payments";
+    | "payments"
+    | "review"
 
 export type NavItem = {
     title: string;
@@ -31,9 +32,9 @@ export const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     ],
     tutor: [
         { title: "Dashboard", href: "/tutor/dashboard", icon: "dashboard" },
-        { title: "Students", href: "/tutor/students", icon: "students" },
         { title: "Bookings", href: "/tutor/bookings", icon: "bookings" },
         { title: "Settings", href: "/tutor/settings", icon: "settings" },
+        { title: "Reviews", href: "/tutor/reviews", icon: "review" },
     ],
     student: [
         { title: "Dashboard", href: "/student/dashboard", icon: "dashboard" },

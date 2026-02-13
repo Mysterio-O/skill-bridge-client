@@ -3,42 +3,8 @@ import HomeClient from "@/components/marketing/HomeClient";
 import type { Tutor } from "@/components/marketing/TutorsSection";
 import type { Review } from "@/components/marketing/ReviewsSection";
 
-export default function HomePage() {
-  const tutors: Tutor[] = [
-    {
-      id: 1,
-      name: "Ayesha Rahman",
-      title: "Full-Stack Engineer",
-      subjects: ["Next.js", "React", "Node.js", "System Design"],
-      rating: 4.9,
-      reviewsCount: 128,
-      hourlyRate: 18,
-      location: "Remote",
-      verified: true,
-    },
-    {
-      id: 2,
-      name: "Tanvir Hasan",
-      title: "Math & Physics Tutor",
-      subjects: ["Algebra", "Calculus", "Physics", "Exam prep"],
-      rating: 4.8,
-      reviewsCount: 96,
-      hourlyRate: 12,
-      location: "Remote",
-      verified: true,
-    },
-    {
-      id: 3,
-      name: "Nusrat Jahan",
-      title: "English & IELTS Coach",
-      subjects: ["IELTS", "Speaking", "Writing", "Grammar"],
-      rating: 4.9,
-      reviewsCount: 141,
-      hourlyRate: 15,
-      location: "Remote",
-      verified: true,
-    },
-  ];
+export default async function HomePage() {
+
 
   const reviews: Review[] = [
     {
@@ -67,5 +33,13 @@ export default function HomePage() {
     },
   ];
 
-  return <HomeClient tutors={tutors} reviews={reviews} />;
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/api/tutors?$page=1&limit=3`, {
+    cache: "no-store",
+  }).catch(() => null);
+
+  const tutors = await res?.json()
+
+
+  return <HomeClient tutors={tutors.data.tutors} reviews={reviews} />;
 }

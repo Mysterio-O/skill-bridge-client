@@ -12,6 +12,7 @@ import {
     GraduationCap,
     CreditCard,
     Home,
+    Star
 } from "lucide-react";
 import ThemeToggle from "../shared/ThemeToggle";
 import { Button } from "../ui/button";
@@ -23,6 +24,7 @@ const ICONS = {
     settings: Settings,
     students: GraduationCap,
     payments: CreditCard,
+    review: Star
 } as const;
 
 export default function DashboardSidebar({ role }: { role: Role }) {

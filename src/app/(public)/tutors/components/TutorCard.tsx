@@ -37,9 +37,11 @@ function subjectLabel(s: TutorSubject) {
 export default function TutorCard({
     tutor,
     onOpen,
+    from
 }: {
     tutor: TutorProfile;
-    onOpen: () => void;
+    onOpen?: () => void;
+    from?: string;
 }) {
     const { user } = useAuth();
     const [openBooking, setOpenBooking] = React.useState(false);
@@ -160,9 +162,23 @@ export default function TutorCard({
                 </div>
 
                 <div className="mt-4 flex items-center justify-evenly gap-2">
-                    <Button variant="secondary" className="rounded-2xl cursor-pointer" onClick={onOpen}>
-                        View details
-                    </Button>
+
+                    {
+                        from === 'home' ? (
+                            <Link href={`/tutors/${tutor.id}`}>
+                                <Button variant="secondary" className="rounded-2xl cursor-pointer">
+                                    View details
+                                </Button>
+                            </Link>
+                        ) : (
+                            <Button variant="secondary" className="rounded-2xl cursor-pointer" onClick={onOpen}>
+                                View details
+                            </Button>
+                        )
+                    }
+
+
+
 
                     {user ? (
                         <Button className="rounded-2xl" onClick={() => setOpenBooking(true)}>
