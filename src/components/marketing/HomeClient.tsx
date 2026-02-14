@@ -4,12 +4,13 @@ import React from "react";
 import { useRouter } from "next/navigation";
 
 import HeroBanner from "@/components/marketing/HeroBanner";
-import TutorsSection, { Tutor } from "@/components/marketing/TutorsSection";
+import TutorsSection from "@/components/marketing/TutorsSection";
 import ReviewsSection, { Review } from "@/components/marketing/ReviewsSection";
 import Footer from "../shared/Footer";
+import { TutorProfile } from "@/app/actions/tutorActions/getTutors";
 
 type HomeClientProps = {
-    tutors: Tutor[];
+    tutors: TutorProfile[];
     reviews: Review[];
 };
 
