@@ -25,8 +25,10 @@ function initials(name?: string) {
 
 export default function StudentProfileForm({
   profile,
+  from
 }: {
   profile: StudentProfileDTO;
+  from?:string;
 }) {
   const [pending, startTransition] = useTransition();
 
@@ -86,7 +88,6 @@ export default function StudentProfileForm({
     }
 
     startTransition(async () => {
-      // ✅ loading toast (dismiss manually)
       const loading = toast({
         title: "Saving changes...",
         description: "Updating your profile. Please wait.",
