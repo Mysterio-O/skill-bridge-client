@@ -33,7 +33,7 @@ export async function getTutorProfileAction(): Promise<TutorProfileDTO> {
 
     const json = await res.json();
 
-    console.log(res,json)
+    // console.log(res,json)
 
     if (!res.ok || !json?.success) {
         throw new Error(json?.message || "Failed to fetch tutor profile");

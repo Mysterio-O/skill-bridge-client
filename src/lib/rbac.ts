@@ -39,7 +39,7 @@ export const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     student: [
         { title: "Dashboard", href: "/student/dashboard", icon: "dashboard" },
         { title: "Bookings", href: "/student/bookings", icon: "bookings" },
-        { title: "Payments", href: "/student/payments", icon: "payments" },
+        // { title: "Payments", href: "/student/payments", icon: "payments" },
         { title: "Settings", href: "/student/settings", icon: "settings" },
     ],
 };
