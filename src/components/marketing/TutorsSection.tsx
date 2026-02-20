@@ -48,6 +48,9 @@ export default function TutorsSection({
 }: TutorsSectionProps) {
 
 
+    if (!tutors || tutors.length === 0) return null;
+
+
     return (
         <section className={cn("relative", className)}>
             <div className="mx-auto max-w-6xl px-4 py-12 md:py-14">
@@ -86,7 +89,7 @@ export default function TutorsSection({
                 {/* Tutor grid */}
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {tutors.slice(0, 6).map((t) => (
-                        <TutorCard key={String(t.id)} tutor={t} from="home"/>
+                        <TutorCard key={String(t.id)} tutor={t} from="home" />
                     ))}
                 </div>
             </div>

@@ -1,12 +1,12 @@
 "use server";
 
-import { headers } from "next/headers";
+import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import type { GetUsersParams, GetUsersResult, UpdateUserStatusPayload, AdminUserDTO } from "./types";
 
 async function getCookieHeader() {
-    const h = await headers();
-    return h.get("cookie") ?? "";
+    const cookieStore = await cookies();
+    return cookieStore.toString();
 }
 
 function getBackendUrl() {
@@ -56,7 +56,7 @@ export async function updateAdminUserStatusAction(
 
     const url = new URL(`${ADMIN_USERS_PATH}/${payload.userId}`, backend);
 
-    const body: Record<string, any> = { status: payload.status };
+    const body: Record<string, string> = { status: payload.status };
     if (payload.status === "banned" && payload.banReason?.trim()) {
         body.banReason = payload.banReason.trim();
     }

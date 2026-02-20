@@ -2,11 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import type { PendingAppsResponse } from "./types";
-import { headers } from "next/headers";
+import { cookies } from "next/headers";
 
 async function getCookieHeader() {
-    const h = await headers();
-    return h.get("cookie") ?? "";
+    const cookieStore = await cookies();
+    return cookieStore.toString();
 }
 
 export async function fetchPendingApplications(params: {

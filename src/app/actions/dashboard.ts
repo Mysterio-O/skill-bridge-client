@@ -1,11 +1,11 @@
 "use server";
 
-import { headers } from "next/headers";
+import { cookies } from "next/headers";
 import type { DashboardApiResponse, DashboardStats } from "@/types/dashboard";
 
 async function getCookieHeader() {
-    const h = await headers();
-    return h.get("cookie") ?? "";
+    const cookieStore = await cookies();
+    return cookieStore.toString();
 }
 
 function getBackendUrl() {

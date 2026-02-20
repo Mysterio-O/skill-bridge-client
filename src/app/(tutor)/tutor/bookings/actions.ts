@@ -1,10 +1,11 @@
 "use server";
 
-import { headers } from "next/headers";
+import { cookies } from "next/headers";
 
 async function getCookieHeader() {
-    const h = await headers();
-    return h.get("cookie") ?? "";
+
+    const cookieStore = await cookies();
+    return cookieStore
 }
 
 export async function fetchTutorBookings(params: {
@@ -27,7 +28,7 @@ export async function fetchTutorBookings(params: {
     const res = await fetch(url.toString(), {
         method: "GET",
         cache: "no-store",
-        headers: { Cookie: await getCookieHeader() },
+        headers: { Cookie: (await getCookieHeader()).toString() },
     });
 
 
@@ -54,7 +55,7 @@ export async function updateBookingStatus(payload: {
     const res = await fetch(url.toString(), {
         method: "PATCH",
         headers: {
-            Cookie: await getCookieHeader(),
+            Cookie: (await getCookieHeader()).toString(),
             "content-type": "application/json",
         },
         body: JSON.stringify(payload),
@@ -62,7 +63,7 @@ export async function updateBookingStatus(payload: {
 
     const json = await res.json();
 
-    console.log(res,json)
+    console.log(res, json)
 
     if (!res.ok || !json?.success) {
         throw new Error(json?.message || "Failed to update booking");

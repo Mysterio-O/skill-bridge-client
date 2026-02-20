@@ -34,12 +34,7 @@ export default async function HomePage() {
   ];
 
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/api/tutors?$page=1&limit=3`, {
-    cache: "no-store",
-  }).catch(() => null);
-
-  const tutors = await res?.json()
 
 
-  return <HomeClient tutors={tutors.data.tutors} reviews={reviews} />;
+  return <HomeClient reviews={reviews} />;
 }
