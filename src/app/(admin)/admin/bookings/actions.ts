@@ -1,11 +1,6 @@
 "use server";
 
-import { cookies } from "next/headers";
-
-async function getCookieHeader() {
-    const cookieStore = await cookies();
-    return cookieStore.toString();
-}
+import { getAuthHeader, getCookieHeader } from "@/lib/auth/server-auth";
 
 export async function fetchAdminBookings(params: {
     page?: number;
@@ -24,10 +19,14 @@ export async function fetchAdminBookings(params: {
     url.searchParams.set("page_size", String(page_size));
     if (search) url.searchParams.set("search", search);
 
+    const authHeaders = await getAuthHeader();
     const res = await fetch(url.toString(), {
         method: "GET",
         cache: "no-store",
-        headers: { Cookie: await getCookieHeader() },
+        headers: { 
+            ...authHeaders,
+            Cookie: await getCookieHeader() 
+        },
     });
 
     const json = await res.json();
@@ -49,9 +48,11 @@ export async function updateBookingStatus(payload: {
 
     const url = new URL(`/api/bookings/${payload.bookingId}`, backend);
 
+    const authHeaders = await getAuthHeader();
     const res = await fetch(url.toString(), {
         method: "PATCH",
         headers: {
+            ...authHeaders,
             Cookie: await getCookieHeader(),
             "content-type": "application/json",
         },

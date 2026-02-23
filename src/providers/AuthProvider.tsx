@@ -1,9 +1,13 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth/auth-client";
+import { ROLE_HOME } from "@/lib/rbac";
 
-export type Session = Awaited<ReturnType<typeof authClient.getSession>>["data"];
+// ✅ derive Session type from useSession return
+type UseSessionReturn = ReturnType<typeof authClient.useSession>;
+export type Session = UseSessionReturn["data"];
 
 type AuthEvent = "SIGNED_IN" | "SIGNED_OUT" | "SESSION_UPDATED";
 
@@ -11,7 +15,7 @@ type AuthListener = (event: AuthEvent, session: Session) => void;
 
 type AuthContextValue = {
   session: Session;
-  user: Session extends null ? null : NonNullable<Session>["user"] | null;
+  user: NonNullable<Session>["user"] | null;
   isPending: boolean;
   error: unknown;
   refetch: () => Promise<void>;
@@ -31,7 +35,7 @@ type AuthContextValue = {
     callbackURL?: string;
   }) => Promise<{ ok: boolean; message?: string }>;
 
-  signInWithGoogle: (payload?: {
+  signInWithGoogle?: (payload?: {
     callbackURL?: string;
     errorCallbackURL?: string;
     newUserCallbackURL?: string;
@@ -47,12 +51,9 @@ const AuthContext = React.createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { data: session, isPending, error, refetch } = authClient.useSession();
 
-  // console.log(session)
-
   const listenersRef = React.useRef(new Set<AuthListener>());
   const prevRef = React.useRef<Session>(null);
 
-  // onAuthStateChange-style behavior
   React.useEffect(() => {
     const prev = prevRef.current;
     const next = session ?? null;
@@ -72,11 +73,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => listenersRef.current.delete(listener);
   }, []);
 
+  const router = useRouter();
+
   const signInWithEmail: AuthContextValue["signInWithEmail"] = async (payload) => {
-    const { data,error } = await authClient.signIn.email(payload);
+    const { data, error } = await authClient.signIn.email(payload);
     if (error) return { ok: false, message: error.message || "Login failed." };
-    console.log(data);
+
+    // store token in readable cookie so client fetch can attach Authorization
+    try {
+      const token = (data && ((data as any).data?.token ?? (data as any).token)) as string | undefined;
+      if (typeof document !== "undefined" && token) {
+        const maxAge = 7 * 24 * 60 * 60;
+        document.cookie = `sb_token_client=${encodeURIComponent(token)}; Path=/; Max-Age=${maxAge}`;
+      }
+    } catch {}
+
     await refetch();
+
+    const user = (data as any)?.user ?? (session as any)?.user ?? null;
+    const role = user?.role as keyof typeof ROLE_HOME | undefined;
+
+    if (role && ROLE_HOME[role]) {
+      try {
+        router.replace(ROLE_HOME[role]);
+      } catch {}
+    }
+
     return { ok: true };
   };
 
@@ -86,22 +108,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { ok: true };
   };
 
-  const signInWithGoogle: AuthContextValue["signInWithGoogle"] = async (payload) => {
-    // Redirect-based by default
-    await authClient.signIn.social({
-      provider: "google",
-      ...payload,
-    });
-  };
+  // const signInWithGoogle: AuthContextValue["signInWithGoogle"] = async (payload) => {
+  //   await authClient.signIn.social({
+  //     provider: "google",
+  //     ...payload,
+  //   } as any);
+  // };
 
   const signOut: AuthContextValue["signOut"] = async () => {
     await authClient.signOut();
+    try {
+      if (typeof document !== "undefined") {
+        document.cookie = `sb_token_client=; Path=/; Max-Age=0`;
+      }
+    } catch {}
     await refetch();
   };
 
   const value: AuthContextValue = {
     session: session ?? null,
-    user: (session)?.user ?? null,
+    user: (session as any)?.user ?? null,
     isPending,
     error,
     refetch: async () => {
@@ -109,7 +135,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     },
     signInWithEmail,
     signUpWithEmail,
-    signInWithGoogle,
+    // signInWithGoogle,
     signOut,
     onAuthStateChange,
   };

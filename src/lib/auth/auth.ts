@@ -1,16 +1,4 @@
-import { betterAuth } from "better-auth"
-import { nextCookies } from "better-auth/next-js"
+// This file previously used `better-auth`. Authentication is now handled
+// via custom JWT endpoints proxied through `/api/auth`.
 
-export const auth = betterAuth({
-    baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
-    emailAndPassword: {
-        enabled: true
-    },
-    socialProviders: {
-        google: {
-            clientId: process.env.GOOGLE_CLIENT_ID as string,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-        },
-    },
-    plugins: [nextCookies()]
-})
+export const UNUSED = {};

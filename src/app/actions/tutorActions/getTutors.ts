@@ -1,4 +1,5 @@
 import { Review } from "@/app/(public)/tutors/[id]/page";
+import { getAuthHeader } from "@/lib/auth/server-auth";
 
 export type TutorUser = {
   id: string;
@@ -111,7 +112,13 @@ export async function getTutors(params: Params = {}): Promise<GetTutorsResponse>
     qs.set("page", String(page));
     qs.set("limit", String(limit));
     if (params.search) qs.set("search", params.search);
-    const res = await fetch(`/api/tutors?${qs.toString()}`, { cache: "no-store" });
+    const authHeaders = await getAuthHeader();
+    const res = await fetch(`/api/tutors?${qs.toString()}`, { 
+      cache: "no-store",
+      headers: {
+        ...authHeaders,
+      }
+    });
 
     if (!res.ok) {
       const text = await res.text().catch(() => "");
@@ -124,7 +131,13 @@ export async function getTutors(params: Params = {}): Promise<GetTutorsResponse>
   url.searchParams.set("limit", String(limit));
   if (params.search) url.searchParams.set("search", params.search);
 
-  const res = await fetch(url.toString(), { cache: "no-store" });
+  const authHeaders = await getAuthHeader();
+  const res = await fetch(url.toString(), { 
+    cache: "no-store",
+    headers: {
+      ...authHeaders,
+    }
+  });
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");

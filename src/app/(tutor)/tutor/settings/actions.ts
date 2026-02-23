@@ -1,13 +1,8 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { getAuthHeader, getCookieHeader } from "@/lib/auth/server-auth";
 import { revalidatePath } from "next/cache";
 import type { TutorAvailability, TutorProfileDTO } from "./types";
-
-async function getCookieHeader() {
-    const cookieStore = await cookies();
-    return cookieStore.toString();
-}
 
 function getBackendUrl() {
     const backend = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -23,10 +18,12 @@ export async function getTutorProfileAction(): Promise<TutorProfileDTO> {
 
     console.log(backend, url.toString())
 
+    const authHeaders = await getAuthHeader();
     const res = await fetch(url.toString(), {
         method: "GET",
         cache: "no-store",
         headers: {
+            ...authHeaders,
             Cookie: await getCookieHeader(),
         },
     });
@@ -48,10 +45,12 @@ export async function updateTutorProfileAction(payload: Partial<TutorProfileDTO>
 
     const url = new URL("/api/tutor/profile", backend);
 
+    const authHeaders = await getAuthHeader();
     const res = await fetch(url.toString(), {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
+            ...authHeaders,
             Cookie: await getCookieHeader(),
         },
         body: JSON.stringify(payload),
@@ -73,10 +72,12 @@ export async function updateAvailabilityAction(status: TutorAvailability) {
 
     const url = new URL("/api/tutor/availability", backend);
 
+    const authHeaders = await getAuthHeader();
     const res = await fetch(url.toString(), {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
+            ...authHeaders,
             Cookie: await getCookieHeader(),
         },
         body: JSON.stringify({ status }),

@@ -1,12 +1,6 @@
 'use server'
 
-import { cookies } from "next/headers";
-
-
-async function getCookieHeader() {
-    const cookieStore = await cookies();
-    return cookieStore.toString();
-}
+import { getAuthHeader, getCookieHeader } from "@/lib/auth/server-auth";
 
 export async function fetchBookings(params: {
     page?: number;
@@ -25,10 +19,12 @@ export async function fetchBookings(params: {
     url.searchParams.set("page_size", String(page_size));
     if (search.length > 0) url.searchParams.set("search", search);
 
+    const authHeaders = await getAuthHeader();
     const res = await fetch(url.toString(), {
         method: "GET",
         cache: "no-store",
         headers: {
+            ...authHeaders,
             Cookie: await getCookieHeader()
         }
     });
@@ -59,9 +55,11 @@ export async function updateBookingStatus(payload: {
 
         const url = new URL(`/api/bookings/${payload.bookingId}`, backend);
 
+        const authHeaders = await getAuthHeader();
         const res = await fetch(url.toString(), {
             method: "PATCH",
             headers: {
+                ...authHeaders,
                 Cookie: await getCookieHeader(),
                 "content-type": "application/json"
             },
@@ -100,10 +98,12 @@ export async function postReview(payload: {
 
     const url = new URL("/api/review", backend);
 
+    const authHeaders = await getAuthHeader();
     const res = await fetch(url.toString(), {
         method: "POST",
         cache: "no-store",
         headers: {
+            ...authHeaders,
             Cookie: await getCookieHeader(),
             "content-type": "application/json",
         },

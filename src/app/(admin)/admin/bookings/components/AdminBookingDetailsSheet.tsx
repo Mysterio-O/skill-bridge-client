@@ -115,7 +115,7 @@ export default function AdminBookingDetailsSheet({
                             </Button>
 
                             {/* Admin: quick status change (adjust to your enum) */}
-                            {
+                            {/* {
                                 booking.status === 'pending' ? (
                                     <div className="flex items-center gap-2">
                                         <Button variant="outline" disabled={busy} onClick={() => setStatus("confirmed")}>
@@ -138,7 +138,7 @@ export default function AdminBookingDetailsSheet({
                                         Complete
                                     </Button>
                                 )
-                            }
+                            } */}
 
                         </div>
 

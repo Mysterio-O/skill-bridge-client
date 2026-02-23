@@ -1,12 +1,7 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { getAuthHeader, getCookieHeader } from "@/lib/auth/server-auth";
 import type { DashboardApiResponse, DashboardStats } from "@/types/dashboard";
-
-async function getCookieHeader() {
-    const cookieStore = await cookies();
-    return cookieStore.toString();
-}
 
 function getBackendUrl() {
     const backend = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -18,10 +13,12 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     const backend = getBackendUrl();
     const url = new URL("/api/dashboard", backend);
 
+    const authHeaders = await getAuthHeader();
     const res = await fetch(url.toString(), {
         method: "GET",
         cache: "no-store",
         headers: {
+            ...authHeaders,
             Cookie: await getCookieHeader(),
         },
     });

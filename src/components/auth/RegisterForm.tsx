@@ -136,7 +136,7 @@ export default function RegisterForm() {
 
             toast({
                 title: "Account created!",
-                description: "Check your email, and verify your email to signin",
+                description: "You're ready to signin with your new account",
             });
 
             // optional:

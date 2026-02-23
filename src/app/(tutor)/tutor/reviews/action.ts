@@ -1,31 +1,25 @@
 'use server'
 
-import { cookies } from "next/headers";
+import { getAuthHeader, getCookieHeader } from "@/lib/auth/server-auth";
 
 
 
-async function getCookieHeader() {
-    const cookieStore = await cookies();
-    return cookieStore.toString();
-}
-
-function getBackendUrl() {
-    const backend = process.env.NEXT_PUBLIC_BACKEND_URL;
-    if (!backend) throw new Error("NEXT_PUBLIC_BACKEND_URL missing");
-    return backend;
+async function getBackendUrl() {
+    return process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
 }
 
 
 export async function getReviews() {
-    const backend = getBackendUrl();
+    const backend = await getBackendUrl();
 
     const url = new URL("/api/review", backend);
 
+    const authHeaders = await getAuthHeader();
     const res = await fetch(url.toString(), {
         method: "GET",
         cache: "no-store",
         headers: {
-            Cookie: await getCookieHeader(),
+            ...authHeaders,
         },
     });
 

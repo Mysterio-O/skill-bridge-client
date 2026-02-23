@@ -31,6 +31,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json(json, { status: res.status });
   } catch (e) {
+    console.log('error in /api/tutors:', e);
     return NextResponse.json(
       { success: false, message:(e instanceof Error)? e?.message : "Proxy failed" },
       { status: 500 }

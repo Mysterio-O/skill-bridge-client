@@ -1,13 +1,8 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { getAuthHeader, getCookieHeader } from "@/lib/auth/server-auth";
 import { revalidatePath } from "next/cache";
 import type { GetUsersParams, GetUsersResult, UpdateUserStatusPayload, AdminUserDTO } from "./types";
-
-async function getCookieHeader() {
-    const cookieStore = await cookies();
-    return cookieStore.toString();
-}
 
 function getBackendUrl() {
     const backend = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -25,10 +20,12 @@ export async function getAdminUsersAction(params: GetUsersParams): Promise<GetUs
     if (params.page) url.searchParams.set("page", String(params.page));
     if (params.limit) url.searchParams.set("limit", String(params.limit));
 
+    const authHeaders = await getAuthHeader();
     const res = await fetch(url.toString(), {
         method: "GET",
         cache: "no-store",
         headers: {
+            ...authHeaders,
             Cookie: await getCookieHeader(),
         },
     });
@@ -61,10 +58,12 @@ export async function updateAdminUserStatusAction(
         body.banReason = payload.banReason.trim();
     }
 
+    const authHeaders = await getAuthHeader();
     const res = await fetch(url.toString(), {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
+            ...authHeaders,
             Cookie: await getCookieHeader(),
         },
         body: JSON.stringify(body),

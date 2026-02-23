@@ -2,12 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import type { PendingAppsResponse } from "./types";
-import { cookies } from "next/headers";
-
-async function getCookieHeader() {
-    const cookieStore = await cookies();
-    return cookieStore.toString();
-}
+import { getAuthHeader, getCookieHeader } from "@/lib/auth/server-auth";
 
 export async function fetchPendingApplications(params: {
     page?: number;
@@ -28,10 +23,12 @@ export async function fetchPendingApplications(params: {
 
     // console.log(await getCookieHeader());
 
+    const authHeaders = await getAuthHeader();
     const res = await fetch(url.toString(), {
         method: "GET",
         cache: "no-store",
         headers: {
+            ...authHeaders,
             Cookie: await getCookieHeader(),
         },
     });
@@ -57,10 +54,12 @@ export async function adminUpdateTutorApplicationStatus(input: {
 
     // console.log(url.toString());
 
+    const authHeaders = await getAuthHeader();
     const res = await fetch(url.toString(), {
         method: "PATCH",
         headers: {
             'Content-Type': "application/json",
+            ...authHeaders,
             Cookie: await getCookieHeader(),
         },
         body: JSON.stringify({ status: input.status })
@@ -80,10 +79,12 @@ export async function adminDeleteTutorApplication(input: { applicationId: string
 
     const url = new URL(`/api/admin/users/tutor-applications/${input.applicationId}`, backend);
 
+    const authHeaders = await getAuthHeader();
     const res = await fetch(url.toString(), {
         method: "DELETE",
         headers: {
             'Content-Type': "application/json",
+            ...authHeaders,
             Cookie: await getCookieHeader(),
         }
     });

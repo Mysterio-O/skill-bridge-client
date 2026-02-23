@@ -141,7 +141,7 @@ export default async function TutorReviewsPage() {
         "dark:from-[#060A12] dark:to-[#050713]"
       )}
     >
-      <div className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6 md:py-10">
+      <div className="mx-auto w-full px-4 py-8 md:px-6 md:py-10">
         {/* Header */}
         <div className="mb-6 flex flex-col gap-2">
           <div className="inline-flex w-fit items-center gap-2 rounded-full border border-border/60 bg-muted/40 px-3 py-1 text-xs text-muted-foreground">

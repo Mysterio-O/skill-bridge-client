@@ -11,6 +11,7 @@ import type { TutorProfile, TutorSubject } from "@/app/actions/tutorActions/getT
 import { useAuth } from "@/providers/AuthProvider";
 import ScheduleBookingSheet from "@/components/tutors/ScheduleBookingSheet";
 import { toast } from "@/components/ui/use-toast";
+import { buildAuthHeader } from "@/lib/auth/token";
 
 type CreateBookingPayload = {
     tutorProfileId: string;
@@ -58,7 +59,7 @@ export default function TutorCard({
         try {
             const res = await fetch("/api/bookings", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...buildAuthHeader() },
                 body: JSON.stringify(payload),
             });
             console.log(res);

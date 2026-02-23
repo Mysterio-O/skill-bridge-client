@@ -8,7 +8,6 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -22,7 +21,7 @@ import {
     type BecomeTutorValues,
 } from "../lib/schema";
 import type { Category } from "../lib/types";
-import { fetchCategories, fetchMe, submitTutorApplication } from "../lib/api";
+import { fetchCategories, submitTutorApplication } from "../lib/api";
 
 import { Section, FieldError } from "./Section";
 import LanguagesInput from "./LanguagesInput";
@@ -53,11 +52,7 @@ function prettyPlatform(p: "zoom" | "google_meet" | "others") {
 
 export default function BecomeTutorForm() {
     const router = useRouter();
-
-    const { user } = useAuth();
-
-    const [authLoading, setAuthLoading] = React.useState(true);
-    const [me, setMe] = React.useState<{ id: string; role: "student" | "tutor" | "admin" } | null>(null);
+    const { user, isPending } = useAuth();
 
     const [catsLoading, setCatsLoading] = React.useState(true);
     const [categories, setCategories] = React.useState<Category[]>([]);
@@ -87,31 +82,7 @@ export default function BecomeTutorForm() {
 
     const saving = form.formState.isSubmitting;
 
-    // Auth
-    React.useEffect(() => {
-        let cancelled = false;
-
-        async function run() {
-            try {
-                const res = await fetchMe();
-                if (cancelled) return;
-
-                if (!res?.success || !res.user) setMe(null);
-                else setMe({ id: res.user.id, role: res.user.role });
-            } catch {
-                if (!cancelled) setMe(null);
-            } finally {
-                if (!cancelled) setAuthLoading(false);
-            }
-        }
-
-        run();
-        return () => {
-            cancelled = true;
-        };
-    }, []);
-
-    // Categories
+    // Categories (public)
     React.useEffect(() => {
         let cancelled = false;
 
@@ -134,8 +105,17 @@ export default function BecomeTutorForm() {
     }, []);
 
     async function onSubmit(values: BecomeTutorValues) {
+        if (!user?.id) {
+            toast({
+                variant: "destructive",
+                title: "Not signed in",
+                description: "Please sign in again.",
+            });
+            return;
+        }
+
         try {
-            const { res, json } = await submitTutorApplication({id:user.id, values});
+            const { res, json } = await submitTutorApplication({ id: user.id, values });
 
             if (!res.ok || !json?.success) {
                 toast({
@@ -161,8 +141,8 @@ export default function BecomeTutorForm() {
         }
     }
 
-    // Loading / gating UI
-    if (authLoading) {
+    // ✅ Use AuthProvider loading instead of fetchMe()
+    if (isPending) {
         return (
             <Card className="rounded-3xl border bg-background/40 p-4">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -173,7 +153,8 @@ export default function BecomeTutorForm() {
         );
     }
 
-    if (!me) {
+    // ✅ If no session user, show login gate
+    if (!user) {
         return (
             <Card className="rounded-3xl border bg-background/40 p-4">
                 <h2 className="text-sm font-semibold text-foreground">Sign in required</h2>
@@ -192,7 +173,8 @@ export default function BecomeTutorForm() {
         );
     }
 
-    if (me.role !== "student") {
+    // ✅ Role gate
+    if (user.role !== "student") {
         return (
             <Card className="rounded-3xl border bg-background/40 p-4">
                 <h2 className="text-sm font-semibold text-foreground">Not eligible</h2>
@@ -278,28 +260,19 @@ export default function BecomeTutorForm() {
                                 setValueAs: (v) => (v === "" || v == null ? undefined : Number(v)),
                             })}
                         />
-
                         <FieldError msg={form.formState.errors.yearsOfExperience?.message as string} />
                     </div>
 
                     <div>
                         <Label className="text-xs text-muted-foreground">Education</Label>
-                        <Input
-                            className="mt-2 rounded-2xl"
-                            placeholder="e.g., BSc in Mathematics"
-                            {...form.register("education")}
-                        />
+                        <Input className="mt-2 rounded-2xl" placeholder="e.g., BSc in Mathematics" {...form.register("education")} />
                         <FieldError msg={form.formState.errors.education?.message} />
                     </div>
                 </div>
 
                 <div className="mt-3">
                     <Label className="text-xs text-muted-foreground">Certification</Label>
-                    <Input
-                        className="mt-2 rounded-2xl"
-                        placeholder="e.g., Industry Mentor / Certified Tutor"
-                        {...form.register("certification")}
-                    />
+                    <Input className="mt-2 rounded-2xl" placeholder="e.g., Certified Tutor" {...form.register("certification")} />
                     <FieldError msg={form.formState.errors.certification?.message} />
                 </div>
 

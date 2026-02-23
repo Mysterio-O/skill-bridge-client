@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { montserrat, prosto } from "./font";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 
 export const metadata: Metadata = {
@@ -21,7 +22,9 @@ export default function RootLayout({
       <body className={`${montserrat.variable} ${prosto.variable} primary-font  antialiased`}>
         <ThemeProvider>
           <AuthProvider>
-            {children}
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
             <Toaster />
           </AuthProvider>
         </ThemeProvider>

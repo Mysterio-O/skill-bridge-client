@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { useAuth } from "@/providers/AuthProvider";
 import { Separator } from "../ui/separator";
+import { useRouter } from "next/navigation";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email.").trim().toLowerCase(),
@@ -20,7 +21,9 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 export default function LoginForm() {
-  const { signInWithEmail, signInWithGoogle } = useAuth();
+  const { signInWithEmail } = useAuth();
+
+  const router = useRouter();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -30,12 +33,12 @@ export default function LoginForm() {
   const loading = form.formState.isSubmitting;
 
   async function onSubmit(values: FormValues) {
-    const callbackURL = new URL("/redirect", window.location.origin).toString();
+    // const callbackURL = new URL("/redirect", window.location.origin).toString();
 
     const res = await signInWithEmail({
       email: values.email,
       password: values.password,
-      callbackURL,
+      // callbackURL,
     });
 
     if (!res?.ok) {
@@ -48,32 +51,33 @@ export default function LoginForm() {
     }
 
     toast({ title: "Welcome back!", description: "You are signed in." });
+    router.replace("/");
 
   }
 
-  async function handleGoogle() {
-    try {
-      const callbackURL = new URL("/redirect", window.location.origin).toString();
-      const errorCallbackURL = new URL("/login", window.location.origin).toString();
+  // async function handleGoogle() {
+  //   try {
+  //     const callbackURL = new URL("/redirect", window.location.origin).toString();
+  //     const errorCallbackURL = new URL("/login", window.location.origin).toString();
 
-      await signInWithGoogle({
-        callbackURL,
-        errorCallbackURL,
-      });
-    } catch {
-      toast({
-        variant: "destructive",
-        title: "Google sign-in failed",
-        description: "Please try again.",
-      });
-    }
-  }
+  //     await signInWithGoogle({
+  //       callbackURL,
+  //       errorCallbackURL,
+  //     });
+  //   } catch {
+  //     toast({
+  //       variant: "destructive",
+  //       title: "Google sign-in failed",
+  //       description: "Please try again.",
+  //     });
+  //   }
+  // }
 
   return (
     <div className="grid gap-4">
-      <Button type="button" variant="outline" onClick={handleGoogle} disabled={loading}>
+      {/* <Button type="button" variant="outline" onClick={handleGoogle} disabled={loading}>
         Continue with Google
-      </Button>
+      </Button> */}
 
       <div className="relative">
         <Separator />
