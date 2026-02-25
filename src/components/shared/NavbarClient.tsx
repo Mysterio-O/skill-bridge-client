@@ -137,7 +137,7 @@ export default function Navbar({
     const publicLinks = [
         { href: "/", label: "Home" },
         { href: "/tutors", label: "Tutors" },
-        { href: "/categories", label: "Categories" },
+        // { href: "/categories", label: "Categories" },
     ];
 
     const authedLinks = React.useMemo(() => {

@@ -8,6 +8,7 @@ import TutorsSection from "@/components/marketing/TutorsSection";
 import ReviewsSection, { Review } from "@/components/marketing/ReviewsSection";
 import Footer from "../shared/Footer";
 import { TutorProfile } from "@/app/actions/tutorActions/getTutors";
+import HomeExtraSections from "../home/HomeExtraSections";
 
 type HomeClientProps = {
     reviews: Review[];
@@ -52,6 +53,8 @@ export default function HomeClient({ reviews }: HomeClientProps) {
             />
 
             <ReviewsSection reviews={reviews} />
+
+            <HomeExtraSections />
 
             <Footer />
         </main>

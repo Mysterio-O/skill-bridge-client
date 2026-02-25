@@ -1,6 +1,5 @@
 import React from "react";
 import HomeClient from "@/components/marketing/HomeClient";
-import type { Tutor } from "@/components/marketing/TutorsSection";
 import type { Review } from "@/components/marketing/ReviewsSection";
 
 export default async function HomePage() {

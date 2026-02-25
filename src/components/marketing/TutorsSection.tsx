@@ -3,16 +3,10 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
 import {
     ArrowRight,
-    BadgeCheck,
-    MapPin,
-    Star,
-    Clock,
 } from "lucide-react";
 import TutorCard from "@/app/(public)/tutors/components/TutorCard";
 import { TutorProfile } from "@/app/actions/tutorActions/getTutors";
@@ -71,7 +65,7 @@ export default function TutorsSection({
                 </div>
 
                 {/* Category pills (optional) */}
-                <div className="mt-5 flex flex-wrap gap-2">
+                {/* <div className="mt-5 flex flex-wrap gap-2">
                     {categories.map((c) => (
                         <button
                             key={c}
@@ -82,7 +76,7 @@ export default function TutorsSection({
                             {c}
                         </button>
                     ))}
-                </div>
+                </div> */}
 
                 <Separator className="my-6 opacity-60" />
 
