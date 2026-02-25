@@ -110,7 +110,7 @@ function dashboardHref(role: AppRole) {
 
 function bookingsHref(role: AppRole) {
     if (role === "tutor") return "/tutor/bookings"; // tutors see sessions inside tutor dashboard (adjust if you create /tutor/sessions)
-    if (role === "admin") return "/admin/dashboard/bookings";
+    if (role === "admin") return "/admin/bookings";
     return "/student/bookings";
 }
 
@@ -314,7 +314,7 @@ export default function Navbar({
                                             </Link>
                                         </DropdownMenuItem>
 
-                                        <DropdownMenuSeparator />
+                                        {/* <DropdownMenuSeparator />
 
                                         <DropdownMenuItem asChild>
                                             <Link href="/dashboard/profile" className="flex items-center gap-2">
@@ -328,7 +328,7 @@ export default function Navbar({
                                                 <Settings className="h-4 w-4" />
                                                 Settings
                                             </Link>
-                                        </DropdownMenuItem>
+                                        </DropdownMenuItem> */}
 
                                         <DropdownMenuSeparator />
 

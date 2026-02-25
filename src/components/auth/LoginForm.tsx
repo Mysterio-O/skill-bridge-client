@@ -12,6 +12,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useAuth } from "@/providers/AuthProvider";
 import { Separator } from "../ui/separator";
 import { useRouter } from "next/navigation";
+import { Eye, EyeClosed } from "lucide-react";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email.").trim().toLowerCase(),
@@ -22,6 +23,8 @@ type FormValues = z.infer<typeof schema>;
 
 export default function LoginForm() {
   const { signInWithEmail } = useAuth();
+
+  const [showPassword, setShowPassword] = React.useState(false);
 
   const router = useRouter();
 
@@ -101,12 +104,21 @@ export default function LoginForm() {
 
         <div className="grid gap-2">
           <label className="text-sm font-medium">Password</label>
-          <Input
-            type="password"
-            placeholder="••••••••"
-            {...form.register("password")}
-            aria-invalid={!!form.formState.errors.password}
-          />
+          <div className="relative">
+            <Input
+              type={showPassword ? "text" : "password"}
+              placeholder="••••••••"
+              {...form.register("password")}
+              aria-invalid={!!form.formState.errors.password}
+            />
+            <span
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer">
+              {
+                !showPassword ? <EyeClosed className="w-4 h-4 text-muted-foreground" /> : <Eye className="w-4 h-4 text-muted-foreground" />
+              }
+            </span>
+          </div>
           {form.formState.errors.password ? (
             <p className="text-xs text-destructive">{form.formState.errors.password.message}</p>
           ) : null}

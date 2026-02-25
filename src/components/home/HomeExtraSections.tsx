@@ -381,7 +381,7 @@ export default function HomeExtraSections() {
                                     variant="outline"
                                     className="w-full rounded-xl"
                                 >
-                                    <Link href="/become-a-tutor">Become a tutor</Link>
+                                    <Link href="/become-tutor">Become a tutor</Link>
                                 </Button>
                             </div>
 
