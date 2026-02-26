@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star, GraduationCap, BadgeCheck, Globe, Calendar } from "lucide-react";
 import type { TutorProfile, TutorSubject } from "@/app/actions/tutorActions/getTutors";
 import { useAuth } from "@/providers/AuthProvider";
+import ScheduleBookingButton from "@/components/shared/ScheduleBookingButton";
 
 function initials(name?: string) {
   if (!name) return "T";
@@ -151,11 +152,7 @@ export default function TutorDetailsSheet({
               </div>
 
               <div className="mt-5 flex flex-col gap-2">
-                {user && <Button className="rounded-2xl" asChild>
-                  <Link href={`/bookings/new?tutorId=${encodeURIComponent(tutor.id)}`}>
-                    Schedule booking
-                  </Link>
-                </Button>}
+                <ScheduleBookingButton tutor={tutor} />
 
                 <Button variant="secondary" className="rounded-2xl" asChild>
                   <Link href={`/tutors/${encodeURIComponent(tutor.id)}`}>
