@@ -8,22 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star, Clock, MapPin } from "lucide-react";
 import type { TutorProfile, TutorSubject } from "@/app/actions/tutorActions/getTutors";
-import { useAuth } from "@/providers/AuthProvider";
-import ScheduleBookingSheet from "@/components/tutors/ScheduleBookingSheet";
-import { toast } from "@/components/ui/use-toast";
-import { buildAuthHeader } from "@/lib/auth/token";
+import ScheduleBookingButton from "@/components/shared/ScheduleBookingButton";
 
-type CreateBookingPayload = {
-    tutorProfileId: string;
 
-    startAt: string;
-    endAt: string;
-    timezone?: string;
-    durationMinutes: number;
-
-    topic?: string;
-    meetingLink?: string;
-};
 
 function initials(name?: string) {
     if (!name) return "T";
@@ -44,50 +31,9 @@ export default function TutorCard({
     onOpen?: () => void;
     from?: string;
 }) {
-    const { user } = useAuth();
-    const [openBooking, setOpenBooking] = React.useState(false);
 
     const name = tutor.user?.name ?? "Tutor";
     const rating = tutor.avgRating != null ? Number(tutor.avgRating).toFixed(1) : null;
-
-    const handleSubmitBooking = React.useCallback(async (payload: CreateBookingPayload) => {
-        const t = toast({
-            title: "Scheduling booking...",
-            description: "Please wait a moment.",
-        });
-
-        try {
-            const res = await fetch("/api/bookings", {
-                method: "POST",
-                headers: { "Content-Type": "application/json", ...buildAuthHeader() },
-                body: JSON.stringify(payload),
-            });
-            console.log(res);
-
-            const json = await res.json();
-
-            console.log(json);
-
-            if (!res.ok || !json?.success) {
-                throw new Error(json?.message || "Failed to create booking");
-            }
-
-            t.update({
-                title: "Booking scheduled",
-                description: "Your booking has been created successfully.",
-            });
-
-            // close sheet
-            setOpenBooking(false);
-        } catch (e) {
-            t.update({
-                title: "Booking failed",
-                description: (e instanceof Error) ? e?.message : "Something went wrong",
-                variant: "destructive",
-            });
-            throw e;
-        }
-    }, []);
 
     return (
         <>
@@ -179,26 +125,12 @@ export default function TutorCard({
                     }
 
 
+                    <ScheduleBookingButton tutor={tutor} />
 
 
-                    {user ? (
-                        <Button className="rounded-2xl" onClick={() => setOpenBooking(true)}>
-                            Schedule booking
-                        </Button>
-                    ) : (
-                        <Button className="rounded-2xl" asChild>
-                            <Link href="/login">Signin to schedule</Link>
-                        </Button>
-                    )}
                 </div>
             </Card>
 
-            <ScheduleBookingSheet
-                open={openBooking}
-                onOpenChange={setOpenBooking}
-                tutor={tutor}
-                onSubmit={handleSubmitBooking}
-            />
         </>
     );
 }

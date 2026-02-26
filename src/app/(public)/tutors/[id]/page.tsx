@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import CTAButtons from "./components/CTAButtons";
 import TutorReviewsSwiper from "./components/TutorReviewsSwiper";
+import { TutorProfile } from "@/app/actions/tutorActions/getTutors";
 
 export const dynamic = "force-dynamic";
 
@@ -62,40 +63,6 @@ type User = {
     tutorReviews: Review[];
 }
 
-type Tutor = {
-    id: string;
-    userId: string;
-
-    headline?: string | null;
-    about?: string | null;
-
-    hourlyRate?: string | number | null;
-    currency?: string | null;
-
-    avgRating?: string | number | null;
-    reviewCount?: number | null;
-
-    yearsOfExperience?: number | null;
-    languages?: string[];
-
-    education?: string | null;
-    certification?: string | null;
-
-    sessionMode?: "online" | "in_person" | "hybrid" | string | null;
-    meetingPlatform?: "zoom" | "google_meet" | "others" | string | null;
-    timezone?: string | null;
-
-    availability?: "available" | "not_available" | string | null;
-    status?: "pending" | "active" | "cancelled" | string | null;
-
-    createdAt?: string;
-    updatedAt?: string;
-
-    subjects?: TutorSubject[];
-
-    // If your API includes user data:
-    user: User
-};
 
 async function getTutorById(id: string) {
     const base = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -104,7 +71,7 @@ async function getTutorById(id: string) {
     const res = await fetch(`${base}/api/tutor/${id}`, { cache: "no-store" });
     if (!res.ok) return null;
 
-    return res.json() as Promise<{ success: boolean; tutor?: Tutor; message?: string }>;
+    return res.json() as Promise<{ success: boolean; tutor?: TutorProfile; message?: string }>;
 }
 
 function prettyMode(mode?: string | null) {
@@ -136,7 +103,7 @@ function money(amount?: string | number | null, currency?: string | null) {
     }
 }
 
-function ratingLabel(avgRating: Tutor["avgRating"], reviewCount?: number | null) {
+function ratingLabel(avgRating: TutorProfile["avgRating"], reviewCount?: number | null) {
     const rc = reviewCount ?? 0;
     if (!avgRating || Number(avgRating) <= 0 || rc <= 0) return "New";
     const n = typeof avgRating === "string" ? Number(avgRating) : avgRating;
@@ -273,7 +240,7 @@ export default async function TutorProfilePage({
                                 </span>
                             </div>
 
-                            <CTAButtons id={tutor.id} />
+                            <CTAButtons tutor={tutor} />
                         </div>
                     </div>
 
