@@ -10,20 +10,6 @@ import { TutorProfile } from "@/app/actions/tutorActions/getTutors";
 
 export const dynamic = "force-dynamic";
 
-type TutorCategory = {
-    id: string;
-    name: string;
-    description?: string | null;
-    icon?: string | null;
-    isActive?: boolean;
-};
-
-type TutorSubject = {
-    id: string;
-    tutorId: string;
-    categoryId: string;
-    category?: TutorCategory;
-};
 
 type Student = {
     id: string;
@@ -45,23 +31,7 @@ export type Review = {
     student: Student;
 }
 
-type User = {
-    id: string;
-    name: string;
-    email: string;
-    emailVerified: boolean;
-    image: string | null;
-    createdAt: Date;
-    updatedAt: Date;
-    role: "student" | 'tutor' | 'admin';
-    phone: string | number;
-    status: string;
-    bio: string;
-    lastLoginAt: string;
-    bannedAt: string | null;
-    banReason: string | null;
-    tutorReviews: Review[];
-}
+
 
 
 async function getTutorById(id: string) {
