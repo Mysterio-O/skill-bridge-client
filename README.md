@@ -24,7 +24,7 @@ A modern, full-featured skill-sharing platform that connects tutors with student
 
 ## � Overview
 
-SkillBridge is a Next.js-based skill-sharing marketplace designed to streamline the process of connecting learners with expert tutors. The platform provides role-based interfaces for three distinct user types:
+SkillBridge is a Next.js-based skill-sharing marketplace designed to streamline the process of connecting learners with expert tutors. It also includes a collection of static marketing and informational pages (About, Careers, Help Center, etc.) to communicate value and policies to visitors. The platform provides role-based interfaces for three distinct user types:
 
 - **Students**: Discover tutors, book sessions, and track learning progress
 - **Tutors**: Manage availability, handle bookings, and build their teaching profile
@@ -71,6 +71,7 @@ The application is built with modern React patterns, TypeScript for type safety,
 - **Responsive Design**: Mobile-first approach with Tailwind CSS
 - **Error Handling**: Comprehensive error boundaries and user feedback
 - **Form Validation**: Client and server-side form validation with Zod
+- **Marketing & Static Content**: A suite of informational public pages (About, Careers, Community, Contact, Help Center, etc.) built with a shared `MarketingPageShell` component to highlight platform features and policies.
 
 ---
 
@@ -150,7 +151,7 @@ Routes are organized in directory groups for better code organization:
 The project follows a well-organized structure using Next.js App Router with layout groups:
 
 **Key Directories:**
--  - Public pages (Home, Tutor Discovery)
+-  - Public pages (Home, Tutor Discovery, and additional static marketing/info pages: About, Careers, Categories, Community, Contact, Cookies, Help Center, How It Works, Privacy, Safety, Terms)
 -  - Authentication pages (Login, Register, Email Verification)
 -  - Admin dashboard and management panels
 -  - Tutor-specific dashboards and settings
@@ -402,7 +403,7 @@ skillbridge/
 │   │   ├── (auth)/                # Login, Register, Email Verification
 │   │   ├── (student)/             # Student dashboard and pages
 │   │   ├── (tutor)/               # Tutor dashboard and pages
-│   │   ├── (public)/              # Home page, tutors listing
+│   │   ├── (public)/              # Public marketing & informational pages (home, tutors listing, about, careers, categories, community, contact, cookies, help-center, how-it-works, privacy, safety, terms)
 │   │   ├── (private)/             # Become tutor form
 │   │   ├── api/                   # API proxy routes
 │   │   ├── actions/               # Server Actions
