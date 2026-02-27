@@ -56,7 +56,7 @@ export default function HomeClient({ reviews }: HomeClientProps) {
 
             <HomeExtraSections />
 
-            <Footer />
+            {/* <Footer /> */}
         </main>
     );
 }

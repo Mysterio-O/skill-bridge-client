@@ -69,7 +69,7 @@ export default function Footer({
                                     size="icon"
                                     className="rounded-xl bg-background/50"
                                 >
-                                    <Link href="/contact" aria-label="Email">
+                                    <Link href="mailto:skrabbi.019@gmail.com" aria-label="Email">
                                         <Mail className="h-4 w-4" />
                                     </Link>
                                 </Button>
@@ -80,7 +80,12 @@ export default function Footer({
                                     size="icon"
                                     className="rounded-xl bg-background/50"
                                 >
-                                    <Link href="#" aria-label="Twitter">
+                                    <Link
+                                        href="https://x.com/Sheikh_Rabbi69"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        aria-label="X (Twitter)"
+                                    >
                                         <Twitter className="h-4 w-4" />
                                     </Link>
                                 </Button>
@@ -91,7 +96,12 @@ export default function Footer({
                                     size="icon"
                                     className="rounded-xl bg-background/50"
                                 >
-                                    <Link href="#" aria-label="LinkedIn">
+                                    <Link
+                                        href="https://www.linkedin.com/in/sk-maruf-hossain/"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        aria-label="LinkedIn"
+                                    >
                                         <Linkedin className="h-4 w-4" />
                                     </Link>
                                 </Button>
@@ -102,7 +112,12 @@ export default function Footer({
                                     size="icon"
                                     className="rounded-xl bg-background/50"
                                 >
-                                    <Link href="#" aria-label="GitHub">
+                                    <Link
+                                        href="https://github.com/Mysterio-O"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        aria-label="GitHub"
+                                    >
                                         <Github className="h-4 w-4" />
                                     </Link>
                                 </Button>
